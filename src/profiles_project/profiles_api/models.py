@@ -68,3 +68,16 @@ class MyUser(AbstractBaseUser):
         "Es el usuario miembro del staff"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class ProfileFeedItem(models.Model):
+    """profile status Update"""
+
+    user_profiles = models.ForeignKey('Myuser', on_delete=models.CASCADE)
+    status_text = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """Retorna el modelo como un string"""
+
+        return self.status_text
