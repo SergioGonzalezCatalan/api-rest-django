@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import status
 from . import serializers
+from . import models
 # Create your views here.
 
 
@@ -99,3 +100,10 @@ class HelloViewSet(viewsets.ViewSet):
         """manejador borra un objeto por su ID"""
 
         return Response({'http_method': "delete"})
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Crea y actualiza profiles"""
+
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.MyUser.objects.all()
