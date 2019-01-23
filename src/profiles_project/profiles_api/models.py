@@ -1,62 +1,70 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
-# from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import (
+    BaseUserManager, AbstractBaseUser
+)
 
 
-class UserProfileManager():
-    """Ayuda a Django a trabajar con nuestro modelo de usuario"""
-
-    def create_user(self, email, name, password=None):
-        """Crea un nuevo objeto user profile"""
-
+class MyUserManager(BaseUserManager):
+    def create_user(self, email, date_of_birth, password=None):
+        """
+        crea y salva un usuario con email y fecha de cumpleaños
+        """
         if not email:
-            raise ValueError('Usuario debe tener una dirección email')
+            raise ValueError('Usuario debe tener una cuenta email')
 
-        email = self.normalize_email(email)
-        user = self.model(email=email, name=name)
+        user = self.model(
+            email=self.normalize_email(email),
+            date_of_birth=date_of_birth,
+        )
 
         user.set_password(password)
         user.save(using=self._db)
-
         return user
 
-    def create_superuser(self, email, name, password):
-        """Crea un nuevo super usuario con los datos entregados"""
-
-        user = self.create_user(email, name, password)
-
-        user.is_superuser = True
-        user.is_staff = True
-
+    def create_superuser(self, email, date_of_birth, password):
+        """
+        crea y salva un usuario con email y fecha de cumpleaños y contraseña
+        """
+        user = self.create_user(
+            email,
+            password=password,
+            date_of_birth=date_of_birth,
+        )
+        user.is_admin = True
         user.save(using=self._db)
         return user
 
 
-class UserProfiles(AbstractBaseUser, PermissionsMixin):
-    """Representa un 'perfil de usuario dentro del sistema'"""
-
-    email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
+class MyUser(AbstractBaseUser):
+    email = models.EmailField(
+        verbose_name='email address',
+        max_length=255,
+        unique=True,
+    )
+    date_of_birth = models.DateField()
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
 
-    objects = UserProfileManager()
+    objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
-
-    def get_full_name(self):
-        """Usado para obtener un nombre de usuario"""
-
-        return self.name
-
-    def get_short_name(self):
-        """Usado para obtener un nombre corto de usuario"""
-
-        return self.name
+    REQUIRED_FIELDS = ['date_of_birth']
 
     def __str__(self):
-        """Usado Por Django para convertir objeto en string"""
-
         return self.email
+
+    def has_perm(self, perm, obj=None):
+        "Tieen el usuario un permiso especifico"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def has_module_perms(self, app_label):
+        "tiene el usuario permiso para ver modulo app_label"
+        # Simplest possible answer: Yes, always
+        return True
+
+    @property
+    def is_staff(self):
+        "Es el usuario miembro del staff"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin
