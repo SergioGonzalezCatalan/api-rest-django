@@ -15,8 +15,8 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
 
   config.vm.network "forwarded_port", host_ip: "127.0.0.1", guest: 8080, host: 8080
-
-  config.vm.synced_folder "C:/Users/segonzalez/worksapace/mi-proyecto-django-rest", "/home/vagrant",
+  config.vm.network "private_network", type: "dhcp"
+  config.vm.synced_folder "C:/Users/segonzalez/worksapace/mi-proyecto-django-rest", "/vagrant",
    id: "vagrant",
    :nfs => true,
    :mount_options => ['nolock,vers=3,udp,noatime,actimeo=2,fsc']
@@ -33,11 +33,11 @@ Vagrant.configure("2") do |config|
     sudo pip install --upgrade pip
     # Install and configure python virtualenvwrapper.
     sudo pip install virtualenvwrapper
-    if ! grep -q VIRTUALENV_ALREADY_ADDED /home/vagrant/.bashrc; then
-        echo "# VIRTUALENV_ALREADY_ADDED" >> /home/vagrant/.bashrc
-        echo "WORKON_HOME=~/.virtualenvs" >> /home/vagrant/.bashrc
-        echo "PROJECT_HOME=/vagrant" >> /home/vagrant/.bashrc
-        echo "source /usr/local/bin/virtualenvwrapper.sh" >> /home/vagrant/.bashrc
+    if ! grep -q VIRTUALENV_ALREADY_ADDED /vagrant/.bashrc; then
+        echo "# VIRTUALENV_ALREADY_ADDED" >> /vagrant/.bashrc
+        echo "WORKON_HOME=~/.virtualenvs" >> /vagrant/.bashrc
+        echo "PROJECT_HOME=/vagrant" >> /vagrant/.bashrc
+        echo "source /usr/local/bin/virtualenvwrapper.sh" >> /vagrant/.bashrc
     fi
   SHELL
 
