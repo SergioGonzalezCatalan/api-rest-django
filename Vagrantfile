@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
     sudo apt-get update
     sudo apt-get -y upgrade
     # Set Ubuntu Language
-    sudo locale-gen en_GB.UTF-8
+    sudo locale-gen es_es.utf-8
     # Install Python, SQLite and pip
     sudo apt-get install -y python3-dev sqlite python-pip
     # Upgrade pip to the latest version.
@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
     sudo pip install virtualenvwrapper
     if ! grep -q VIRTUALENV_ALREADY_ADDED /vagrant/.bashrc; then
         echo "# VIRTUALENV_ALREADY_ADDED" >> /vagrant/.bashrc
-        echo "WORKON_HOME=~/.virtualenvs" >> /vagrant/.bashrc
+        echo "WORKON_HOME=/vagrant/.virtualenvs" >> /vagrant/.bashrc
         echo "PROJECT_HOME=/vagrant" >> /vagrant/.bashrc
         echo "source /usr/local/bin/virtualenvwrapper.sh" >> /vagrant/.bashrc
     fi
