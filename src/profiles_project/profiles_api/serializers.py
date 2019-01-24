@@ -17,7 +17,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'password', 'date_of_birth')
         extra_kwargs = {'password': {'write_only': True}}
 
-    def cerate(self, validated_data):
+    def create(self, validated_data):
         """Crea y retorna un nuevo usuario"""
 
         user = models.MyUser(
@@ -30,3 +30,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class ProfileFeedItemSerializer(serializers.ModelSerializer):
+    """A serializador para profile feed items"""
+
+    class Meta:
+        model = models.ProfileFeedItem
+        fields = ('id', 'user_profiles', 'status_text', 'created_on')
+        extra_kwargs = {'user_profiles': {'read_only': True}}
